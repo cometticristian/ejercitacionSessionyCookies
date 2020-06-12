@@ -3,6 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var colour = require('./routes/colorRoutes.js');
+var session = require('express-session');
+var rememberColour = require("./middlewares/cookieMiddleware");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -18,9 +21,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({secret: "colours"}));
+app.use(rememberColour.rememberColour);
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/colour', colour);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
